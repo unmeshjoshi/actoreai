@@ -1,0 +1,43 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
+
+apply plugin: 'scala'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+def scalaVersion = '2.12'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
+    }
+}
+
+repositories {
+    mavenCentral()
+ }
+
+dependencies {
+    compile group: 'org.scala-lang', name: 'scala-library', version: "$scalaVersion.0"
+
+    testCompile group: "org.scalatest", name: "scalatest_$scalaVersion", version: "3.0.0"
+    compile group: "org.scala-lang.modules", name: "scala-async_$scalaVersion", version: "0.9.6"
+    compile group: "com.typesafe.play", name: "play-json_2.11", version: "2.5.10"
+    compile group: 'com.typesafe.akka', name: "akka-actor_$scalaVersion", version:'2.4.14'
+    compile group: "com.typesafe.akka", name: "akka-persistence_$scalaVersion", version: "2.4.14"
+    compile group: "org.iq80.leveldb", name: "leveldb", version: "0.9"
+    compile group: "org.fusesource.leveldbjni", name: "leveldbjni-all", version: "1.8"
+    compile group: "com.typesafe.akka", name: "akka-persistence-query-experimental_$scalaVersion", version: "2.4.14"
+    compile group: "com.typesafe.akka", name: "akka-cluster_$scalaVersion", version: "2.4.14"
+    compile group: 'com.typesafe.akka', name: "akka-cluster-metrics_$scalaVersion", version: '2.4.14'
+
+}
+
+task classpath << { println sourceSets.main.runtimeClasspath.asPath }
+
+shadowJar {
+    transform(AppendingTransformer) {
+        resource = 'reference.conf'
+    }
+}
