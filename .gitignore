@@ -3,3 +3,5 @@ target
 *.iml
 build
 .gradle
+classes
+gradle*

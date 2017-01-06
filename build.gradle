@@ -26,11 +26,17 @@ dependencies {
     compile group: "com.typesafe.play", name: "play-json_2.11", version: "2.5.10"
     compile group: 'com.typesafe.akka', name: "akka-actor_$scalaVersion", version:'2.4.14'
     compile group: "com.typesafe.akka", name: "akka-persistence_$scalaVersion", version: "2.4.14"
+    compile group: "com.typesafe.akka", name: "akka-remote_$scalaVersion", version: "2.4.14"
     compile group: "org.iq80.leveldb", name: "leveldb", version: "0.9"
     compile group: "org.fusesource.leveldbjni", name: "leveldbjni-all", version: "1.8"
     compile group: "com.typesafe.akka", name: "akka-persistence-query-experimental_$scalaVersion", version: "2.4.14"
     compile group: "com.typesafe.akka", name: "akka-cluster_$scalaVersion", version: "2.4.14"
     compile group: 'com.typesafe.akka', name: "akka-cluster-metrics_$scalaVersion", version: '2.4.14'
+    compile group: 'com.typesafe.akka', name: "akka-stream_$scalaVersion", version: '2.4.14'
+    compile group: 'org.jmdns' , name: 'jmdns', version: '3.5.1' // ApacheV2
+
+
+
 
 }
 
