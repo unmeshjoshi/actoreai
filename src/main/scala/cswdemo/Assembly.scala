@@ -16,12 +16,9 @@ object AssemblyApp extends App {
   val actorSystem = ActorSystem("AssemblyActorSystem", config)
   val assemplyActorRef = actorSystem.actorOf(Props[Assembly])
 
-
-
   import actorSystem.dispatcher
 
   actorSystem.scheduler.schedule(1 second, 1 second, assemplyActorRef, StartObservation())
-//  assemplyActorRef ! StartObservation()
 }
 
 class Assembly extends Actor with Stash {
@@ -31,19 +28,7 @@ class Assembly extends Actor with Stash {
   LocationSubscriberActor.trackConnections(Set(AkkaConnection(ComponentId("hcd1", HCD))), trackerSubscriber)
 
 
-  override def preStart(): Unit = {
-//    val selection = context.actorSelection("akka.tcp://HCDSystem@127.0.1.1:2552/user/hcd1")
-//    println(s"Sending Identify to $selection")
-//    selection ! Identify()
-  }
-
   override def receive = {
-    //    case ActorIdentity(correlationId, Some(hcdActorRef)) => {
-    //      this.hcdActorRef = hcdActorRef
-    //      println(s"Resolved hcd actor reference $hcdActorRef")
-    //      context.become(ready)
-    //      unstashAll()
-    //    }
     case location: Location =>
       location match {
         case l: ResolvedAkkaLocation =>

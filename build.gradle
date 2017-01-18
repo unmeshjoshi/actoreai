@@ -34,6 +34,8 @@ dependencies {
     compile group: 'com.typesafe.akka', name: "akka-cluster-metrics_$scalaVersion", version: '2.4.14'
     compile group: 'com.typesafe.akka', name: "akka-stream_$scalaVersion", version: '2.4.14'
     compile group: 'org.jmdns' , name: 'jmdns', version: '3.5.1' // ApacheV2
+    compile group: 'com.github.etaty', name:"rediscala_$scalaVersion", version: '1.8.0' // ApacheV2
+
 
 
 
