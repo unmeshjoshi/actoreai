@@ -19,27 +19,26 @@ repositories {
  }
 
 dependencies {
-    compile group: 'org.scala-lang', name: 'scala-library', version: "$scalaVersion.0"
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.12.1'
 
     testCompile group: "org.scalatest", name: "scalatest_$scalaVersion", version: "3.0.0"
     compile group: "org.scala-lang.modules", name: "scala-async_$scalaVersion", version: "0.9.6"
-    compile group: "com.typesafe.play", name: "play-json_2.11", version: "2.5.10"
-    compile group: 'com.typesafe.akka', name: "akka-actor_$scalaVersion", version:'2.4.14'
-    compile group: "com.typesafe.akka", name: "akka-persistence_$scalaVersion", version: "2.4.14"
-    compile group: "com.typesafe.akka", name: "akka-remote_$scalaVersion", version: "2.4.14"
+    def akkaVersion = '2.4.16'
+    compile group: 'com.typesafe.akka', name: "akka-actor_$scalaVersion", version:akkaVersion
+    compile group: "com.typesafe.akka", name: "akka-persistence_$scalaVersion", version: akkaVersion
+    compile group: "com.typesafe.akka", name: "akka-remote_$scalaVersion", version: akkaVersion
     compile group: "org.iq80.leveldb", name: "leveldb", version: "0.9"
     compile group: "org.fusesource.leveldbjni", name: "leveldbjni-all", version: "1.8"
-    compile group: "com.typesafe.akka", name: "akka-persistence-query-experimental_$scalaVersion", version: "2.4.14"
-    compile group: "com.typesafe.akka", name: "akka-cluster_$scalaVersion", version: "2.4.14"
-    compile group: 'com.typesafe.akka', name: "akka-cluster-metrics_$scalaVersion", version: '2.4.14'
-    compile group: 'com.typesafe.akka', name: "akka-stream_$scalaVersion", version: '2.4.14'
+    compile group: "com.typesafe.akka", name: "akka-persistence-query-experimental_$scalaVersion", version: akkaVersion
+    compile group: "com.typesafe.akka", name: "akka-cluster_$scalaVersion", version: akkaVersion
+    compile group: 'com.typesafe.akka', name: "akka-cluster-metrics_$scalaVersion", version: akkaVersion
+    compile group: 'com.typesafe.akka', name: "akka-stream_$scalaVersion", version: akkaVersion
     compile group: 'org.jmdns' , name: 'jmdns', version: '3.5.1' // ApacheV2
     compile group: 'com.github.etaty', name:"rediscala_$scalaVersion", version: '1.8.0' // ApacheV2
-
-
-
-
-
+    compile group: 'org.zeromq', name: 'jeromq', version: '0.3.6'
+    compile group: 'com.typesafe.akka', name: 'akka-http_2.12', version: '10.0.1'
+    compile group: 'com.typesafe.akka', name: 'akka-http-core_2.12', version: '10.0.1'
+    compile group: 'com.typesafe.akka', name: 'akka-http-spray-json_2.12', version: '10.0.1'
 }
 
 task classpath << { println sourceSets.main.runtimeClasspath.asPath }

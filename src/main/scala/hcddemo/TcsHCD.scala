@@ -1,8 +1,13 @@
 package hcddemo
 
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.model._
+import akka.stream.ActorMaterializer
 import hcddemo.Assembly.Start
 import hcddemo.TestHCD.SetupConfig
+
+import scala.io.StdIn
 
 class Supervisor extends Actor {
 
@@ -41,8 +46,14 @@ class Assembly extends Actor {
       println(s)
       hcdRef ! SetupConfig(12)
       hcdRef ! SetupConfig(13)
+//      throw new RuntimeException("Assembly broken")
       hcdRef ! SetupConfig(14)
     }
+  }
+
+  override def postRestart(reason: Throwable): Unit = {
+    super.postRestart(reason)
+    println(s"Assembly Restarted because of ${reason.getMessage}")
   }
 }
 
@@ -51,7 +62,25 @@ object TestHCD {
 }
 
 object TestHCDApp extends App {
-  val system = ActorSystem("hcdApp")
+  implicit val system = ActorSystem("hcdApp")
+  implicit val materializer = ActorMaterializer()
+  // needed for the future map/flatmap in the end
+  implicit val executionContext = system.dispatcher
   val assemblyRef = system.actorOf(Props[Assembly], "Assembly")
-  assemblyRef ! Start()
+
+  import akka.http.scaladsl.model.HttpMethods._
+
+
+  val requestHandler: HttpRequest => HttpResponse = {
+    case HttpRequest(POST, Uri.Path("/start-assembly"), _, _, _) =>
+      assemblyRef ! Start()
+      HttpResponse(entity = "Assembly started!")
+
+    case r: HttpRequest =>
+      r.discardEntityBytes() // important to drain incoming HTTP Entity stream
+      HttpResponse(404, entity = "Unknown resource!")
+  }
+
+  val bindingFuture = Http().bindAndHandleSync(requestHandler, "localhost", 8080)
+  println(s"Server online at http://localhost:8080/\nPress RETURN to stop...")
 }
