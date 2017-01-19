@@ -1,5 +1,7 @@
 package hcddemo
 
+import java.util.concurrent.Executors
+
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
@@ -7,7 +9,7 @@ import akka.stream.ActorMaterializer
 import hcddemo.Assembly.Start
 import hcddemo.TestHCD.SetupConfig
 
-import scala.io.StdIn
+import scala.concurrent.{ExecutionContext, Future}
 
 class Supervisor extends Actor {
 
@@ -60,6 +62,7 @@ class Assembly extends Actor {
 object TestHCD {
   case class SetupConfig(val position:Int){}
 }
+import scala.concurrent.duration._
 
 object TestHCDApp extends App {
   implicit val system = ActorSystem("hcdApp")
@@ -70,6 +73,24 @@ object TestHCDApp extends App {
 
   import akka.http.scaladsl.model.HttpMethods._
 
+  val publisher = new ZMQPublisher()
+  system.scheduler.schedule(1 second, 1 second, new Runnable(){
+    override def run(): Unit = {
+      println("Publishing message")
+      publisher.publish("Hello");
+    }
+  })
+
+  private val ec = ExecutionContext.fromExecutorService(Executors.newSingleThreadExecutor())
+  Future {
+    val zmqSubscriber = new ZmqSubscriber()
+    zmqSubscriber.stream
+      .runForeach { message =>
+        println(message)
+      }.onComplete { x =>
+      zmqSubscriber.shutdown()
+    }
+  } (ec)
 
   val requestHandler: HttpRequest => HttpResponse = {
     case HttpRequest(POST, Uri.Path("/start-assembly"), _, _, _) =>
