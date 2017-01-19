@@ -4,12 +4,9 @@ import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 
 import akka.actor.{Actor, ActorLogging, ActorSystem, Props}
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
 import akka.stream.ActorMaterializer
 import hcddemo.Assembly.Start
 import hcddemo.TestHCD.SetupConfig
-import redis.actors.RedisSubscriberActor
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,8 +62,6 @@ class Assembly extends Actor {
   }
 }
 
-import scala.concurrent.duration._
-
 object TestHCDApp extends App {
   implicit val system = ActorSystem("hcdApp")
   implicit val materializer = ActorMaterializer()
@@ -94,7 +89,10 @@ object TestHCDApp extends App {
 
 
   private def startHttpServer() = {
+    import akka.http.scaladsl.Http
+    import akka.http.scaladsl.model._
     import akka.http.scaladsl.model.HttpMethods._
+
     val requestHandler: HttpRequest => HttpResponse = {
       case HttpRequest(POST, Uri.Path("/start-assembly"), _, _, _) =>
         assemblyRef ! Start()
@@ -111,6 +109,8 @@ object TestHCDApp extends App {
 
 
   private def startHardwareEventPublisherSimulator() = {
+    import scala.concurrent.duration._
+
     val publisher = new ZMQPublisher()
     system.scheduler.schedule(1 second, 1 second, new Runnable() {
       override def run(): Unit = {
@@ -138,8 +138,9 @@ object TestHCDApp extends App {
 
 
   private def startRedisSubscriberClient() = {
-
     import redis.api.pubsub.{Message, PMessage}
+    import redis.actors.RedisSubscriberActor
+
     class SubscribeActor(channels: Seq[String] = Nil, patterns: Seq[String] = Nil)
       extends RedisSubscriberActor(
         new InetSocketAddress("localhost", 6379),
