@@ -88,7 +88,7 @@ object TestHCDApp extends App {
   // docker run -i -t -p 6379:6379 redis-centos
   startRedisSubscriberClient()
 
-  //To start assembly
+  //Starts accepting http requests to start assembly
   //curl -X POST http://localhost:8080/start-assembly
   startHttpServer()
 
